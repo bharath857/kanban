@@ -28,10 +28,8 @@
                 "lastName": "Reddy"
             }
         ],
-        "Tasks": {
-            "taskName1":"taskName1",
-            "taskName2":"taskName2"
-        }
+        "Tasks": [ ]
+        
     },
     {
         "projectName": "projectName2",

@@ -15,7 +15,7 @@ export class CreateNewTaskComponent implements OnInit {
   projectUser = [] as ProjectUsers[];
 
   existingTasks: any;
-  projectList = [] as  Projectlist[];
+  projectList = [] as Projectlist[];
 
   addValidations = new FormControl();
   addFiles = new FormControl();
@@ -81,7 +81,7 @@ export class CreateNewTaskComponent implements OnInit {
     let task = {
       id: this.taskValidations.length + 1,
       name: this.taskValidator.value,
-      status:false
+      isCompleted: false
     }
     this.taskValidations.push(task)
     this.taskValidator = new FormControl();
@@ -125,30 +125,34 @@ export class CreateNewTaskComponent implements OnInit {
     console.log(this.taskForms.valid, this.taskForms)
 
     this.projectList.find((project) => {
-      if(project.projectName === 'projectName1'){
-        const newTask:Newtask = {
+      if (project.projectName === 'projectName1') {
+        const newTask: Newtask = {
           taskName: this.valuesChangestaskForms['taskName'].value,
-          priority: '',
-          createdBy: '',
-          createdOn: '',
-          hoursToComplete: 0,
-          extraHoursToComplete: 0,
-          assignedDeveloper: '',
-          assignedDeveloperRequestedHours: 0,
-          taskDetails: '',
-          taskValidations: [],
-          taskFiles: [],
+          priority: this.valuesChangestaskForms['priority'].value,
+          createdBy: this.valuesChangestaskForms['createdBy'].value,
+          createdOn: this.valuesChangestaskForms['createdOn'].value,
+          hoursToComplete: this.valuesChangestaskForms['hoursToComplete'].value,
+          extraHoursToComplete: this.valuesChangestaskForms['extraHoursToComplete'].value,
+          assignedDeveloper: this.valuesChangestaskForms['assignedDeveloper'].value,
+          assignedDeveloperRequestedHours: this.valuesChangestaskForms['assignedDeveloperRequestedHours'].value,
+          taskDetails: this.valuesChangestaskForms['taskDetails'].value,
+          taskValidations: this.taskValidations,
+          taskFiles: this.taskFiles,
           comments: []
         }
-        project.Tasks.push()
+
+        if(this.valuesChangestaskForms['comments'].value){
+          newTask.comments.push({
+            commentedBy: this.valuesChangestaskForms['createdBy'].value,
+            comment: this.valuesChangestaskForms['comments'].value,
+            commnetedOn: new Date(),
+          })
+        }
+        console.log(newTask, project )
+        project.Tasks.push(newTask)
       }
     })
 
-    const projectStructure: Projectlist = {
-      projectName: 'comingfromparent',
-      UsersIDList: this.projectUser,
-      Tasks: this.existingTasks
-    }
   }
 
   cancelTask() {
@@ -159,7 +163,7 @@ export class CreateNewTaskComponent implements OnInit {
 export interface TaskValidations {
   id: number,
   name: string,
-  status:boolean
+  isCompleted: boolean
 }
 
 export interface ProjectUsers {
@@ -175,17 +179,17 @@ export interface Comments {
 }
 
 export interface Newtask {
-  taskName:string,
-  priority:string,
-  createdBy:string,
-  createdOn:string,
-  hoursToComplete:number,
-  extraHoursToComplete:number,
-  assignedDeveloper:string,
-  assignedDeveloperRequestedHours:number,
-  taskDetails:string,
+  taskName: string,
+  priority: string,
+  createdBy: string,
+  createdOn: string,
+  hoursToComplete: number,
+  extraHoursToComplete: number,
+  assignedDeveloper: string,
+  assignedDeveloperRequestedHours: number,
+  taskDetails: string,
 
-  taskValidations:TaskValidations[],
-  taskFiles:File[],
-  comments:Comments[]
+  taskValidations: TaskValidations[],
+  taskFiles: File[],
+  comments: Comments[]
 }
