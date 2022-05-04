@@ -1,0 +1,217 @@
+<div class="task-min-details">
+    <form [formGroup]="taskForms">
+
+        <div class="row">
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-3">
+                <h3 class="mt-2"> New Task Name</h3>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                <input class="form-control"
+                    [ngClass]="(valuesChangestaskForms['taskName'].touched && (valuesChangestaskForms['taskName'].value?.length < 10)) ? 'is-invalid' : '' "
+                    type="text" placeholder="New Task Name" formControlName="taskName">
+                <div class="invalid-feedback" *ngIf="(valuesChangestaskForms['taskName'].touched)">
+                     <span *ngIf="valuesChangestaskForms['taskName'].errors?.['minlength']"> Minium length should be 10 Characters</span>
+                    <span *ngIf="(valuesChangestaskForms['taskName'].errors?.['required'])"> * Required</span>
+                </div>
+
+            </div>
+
+            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
+                <h4 class="mt-2"> Priority </h4>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-1">
+                <select class="form-select" name="Priority" id="Priority" formControlName="priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+
+                <div class="my-2">
+                    Selected
+                    <span *ngIf="valuesChangestaskForms['priority'].value === 'Low' "
+                        class="badge mx-1 rounded-pill bg-warning text-dark">Low</span>
+                    <span *ngIf="valuesChangestaskForms['priority'].value === 'Medium' "
+                        class="badge mx-1 rounded-pill bg-info text-dark">Medium</span>
+                    <span *ngIf="valuesChangestaskForms['priority'].value === 'High' "
+                        class="badge mx-1 rounded-pill bg-danger">High</span>
+                </div>
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
+                <button mat-raised-button class="bg-danger text-light mb-2" (click)="cancelTask()" >Cancel</button>
+                <button mat-raised-button class="bg-success text-light mx-2 mb-2" (click)="submitTask()" >Save</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12"
+                style="border: 1px solid lightblue; border-radius: 0.3rem;">
+                <div class="task-info">
+                    <h5 class="m-2">Task Details and Points to be considired</h5>
+                    <div class="row mx-2">
+                        <div class="col-6">
+                            <mat-checkbox class="add-validations" color="warn"
+                            [formControl]="addValidations">Add Validations</mat-checkbox><br>
+                            <mat-checkbox class="add-files" color="warn"
+                            [formControl]="addFiles">Images-Files</mat-checkbox>
+                        </div>
+                        <div class="col-6">
+                            <mat-checkbox class="Placeholder" color="warn">Placeholder</mat-checkbox><br>
+                            <mat-checkbox class="Placeholder" color="warn">Placeholder</mat-checkbox>
+                        </div>
+                    </div>
+                    <div class="task-explanation mt-3">
+                        <textarea class="form-control" id="task-details" name="task-details" rows="8" cols="90%"
+                            placeholder="Explain the Task in few sentences"
+                            formControlName="taskDetails"></textarea>
+                    </div>
+
+                    <div class="row mx-2">
+                        <div class="col-6" *ngIf="addValidations.value">
+                            <div class="addvalidations" style="display: inline-flex; margin: 1rem 0 1rem 0;">
+                                <input class="form-control" type="text" minlength="4" maxlength="20"
+                                    placeholder="Add validation to Task" [formControl]="taskValidator">
+                                <button mat-icon-button color="primary" aria-label="icon button with a add icon"
+                                    [disabled]="taskValidator.value?.length > 4 ? false :true "
+                                    (click)="addValidationsToTask()">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </div>
+                            <div class="listofValaDitors" style="max-height: 30vh;overflow-x: hidden">
+                                <div *ngFor="let validations of taskValidations; let i = index">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            {{i+1}} . {{ validations.name}}
+                                        </div>
+                                        <div class="col-4">
+                                            <button mat-icon-button color="primary"
+                                                aria-label="icon button with a add icon"
+                                                (click)="removeValidationsFromTask(validations)">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                            <input type="checkbox">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  <ol class="list-group list-group-numbered">
+                                <li *ngFor="let validations of taskValidations; let i = index" class="list-group-item">
+                                    {{ validations.name}}
+                                    <button mat-icon-button color="primary" aria-label="icon button with a add icon"
+                                        (click)="removeValidationsFromTask(validations)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </li>
+                            </ol> -->
+                            </div>
+                        </div>
+                        <div class="col-6" *ngIf="addFiles.value">
+                            <div class="addfiles" style="display: inline-flex; margin: 1rem 0 1rem 0;">
+                                <input (change)="uploadFile($event)" name="avatar" class="form-control" type="file"
+                                    id="formFile" placeholder="only images">
+                            </div>
+                            <div class="listofValaDitors" style="max-height: 30vh;overflow-x: hidden">
+                                <div *ngFor="let files of taskFiles; let i = index">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <a href="javascript:void(0)" (click)="checkImage(files)">
+                                                {{i+1}} . {{ files.name}}
+                                            </a>
+                                        </div>
+                                        <div class="col-2">
+                                            <button mat-icon-button color="primary"
+                                                aria-label="icon button with a add icon"
+                                                (click)="removefileFromTask(files)">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12"
+                style="border: 1px solid lightblue; border-radius: 0.3rem;">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 my-2">
+                        <div class="user">
+                            <h6>Created By </h6>
+                            <select class="form-select" name="Priority" id="Priority"  formControlName="createdBy">
+                                <option value="Low">Low</option>
+                                <option value="Bharath J Reddy (bay857) ">Bharath J Reddy</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 my-2">
+                        <div class="task-created">
+                            <h6>Created on</h6>
+                            <input class="form-control" type="text" name="" id="" readonly formControlName="createdOn">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 my-2">
+                        <h6>No of hr's to complete</h6>
+                        <input class="form-control" type="number" name="" id="" min="0" formControlName="hoursToComplete">
+                    </div>
+
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 my-2">
+                        <h6>Extra hr's can be allocated</h6>
+                        <input class="form-control" type="number" name="" id="" min="0" formControlName="extraHoursToComplete">
+                    </div>
+                </div>
+
+                <br>
+                <br>
+                <hr>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 my-2">
+                        <h6>Developer Assigned </h6>
+                        <select class="form-select" name="Priority" id="Priority" formControlName="assignedDeveloper">
+                            <option value="">Select</option>
+                            <option *ngFor="let user of projectUser" 
+                            value="{{user.firstName}} + ' ' + {{user.lastName}} + ' (' +{{ user.userId}} + ') '">
+                            {{user.firstName}} {{user.lastName}} ({{ user.userId}})
+                        </option>
+                        </select>
+                    </div>
+
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 my-2">
+                        <h6>Assigned Developer Requested hr's</h6>
+                        <input class="form-control" type="number" name="" id="" min="0" formControlName="assignedDeveloperRequestedHours">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h6>Comments </h6>
+                    <textarea class="form-control" id="task-details" name="task-details" rows="2" cols="90%"
+                        placeholder="Comment to be updated" formControlName="comments" ></textarea>
+                </div>
+
+                <div class="commnets" style="max-height: 30vh;overflow-x: hidden">
+                    <div *ngFor="let comment of comments; let i = index">
+                        <span class="badge rounded-pill bg-info text-dark">{{comment.commentedBy }}</span>
+                        <label class="mx-3" for="CommentBy"> on {{ comment.commnetedOn | date: 'dd/MM/yyyy hh:mm a'}}
+                        </label>
+                        <br>
+                        <p class="mt-2">{{ comment.comment }} </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </form>
+</div>
+
+<div *ngIf="url" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 my-5">
+    <img src={{url}} width="350" height="450">
+</div>
