@@ -1,5 +1,6 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export interface Param {
@@ -17,7 +18,7 @@ export class UtilService {
       'Content-Type': 'application/json'
     })
   }
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   generateURL(path: string, parms: Param[], apptype: string) {
@@ -41,5 +42,52 @@ export class UtilService {
     let equalSeparatedParms = parms.map((param: Param) => `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`);
     return `${this.config.api_endpoint}${path}?${equalSeparatedParms.join('&')}`
   }
+  /* : Observable<Projectlist[]>  */
+  readProjectUsers() {
+    let projectName = 'projectName1'
+    return this.http.get<Projectlist[]>('assets/api/projectsList.json')
+      .pipe(map((response) => {
+        const projectDetails = response.find((project) => (project.projectName === projectName))
+        if (projectDetails) {
+          const modifiedResponse = {
+            projectList: response,
+            project: projectDetails
+          }
+          return modifiedResponse
+        } else {
+          throw new Error("Project not found")
+        }
+      }))
+  }
 }
 
+export interface Projectlist {
+  projectName: string,
+  UsersIDList: UsersIDList[],
+  Tasks: TasksList[],
+}
+
+export interface UsersIDList {
+  userId: string,
+  firstName: string,
+  lastName: string,
+}
+
+export interface TasksList {
+  taskName: string
+}
+
+export interface User {
+  userId: string,
+  firstName: string,
+  lastName: string,
+  dob: string,
+  emailId: string,
+  phoneNumber: number
+  projectList: ProjectList[]
+}
+
+export interface ProjectList {
+  projectName: string,
+  Permission: string
+}

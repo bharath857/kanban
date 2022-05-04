@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBarType, SnakbarService } from 'src/app/shared/utilities/snackbar/snakbar.service';
+import { Projectlist, User, UtilService } from 'src/app/shared/utilities/util/util.service';
 
 @Component({
   selector: 'app-create-new-task',
@@ -11,7 +12,11 @@ import { MatSnackBarType, SnakbarService } from 'src/app/shared/utilities/snackb
 export class CreateNewTaskComponent implements OnInit {
   taskForms: FormGroup;
   userDetails: User;
-  projectUser: ProjectUsers[];
+  projectUser = [] as ProjectUsers[];
+
+  existingTasks: any;
+  projectList = [] as  Projectlist[];
+
   addValidations = new FormControl();
   addFiles = new FormControl();
 
@@ -24,19 +29,14 @@ export class CreateNewTaskComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private datePipe: DatePipe,
+    private utils: UtilService,
     private snakbar: SnakbarService) {
 
-    this.projectUser = [{
-      userId: "Bay857",
-      firstName: "Bharath J",
-      lastName: "Reddy"
-    },
-    {
-      userId: "Bay858",
-      firstName: "Karthik J",
-      lastName: "Reddy"
-    }];
-
+    this.utils.readProjectUsers().subscribe((response: any) => {
+      this.projectList = response.projectList
+      this.projectUser = response.project.UsersIDList;
+      this.existingTasks = response.project.Tasks;
+    })
     this.userDetails = {
       userId: 'bay857',
       firstName: 'Bharath J',
@@ -71,7 +71,6 @@ export class CreateNewTaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 
   get valuesChangestaskForms() {
@@ -81,7 +80,8 @@ export class CreateNewTaskComponent implements OnInit {
   addValidationsToTask() {
     let task = {
       id: this.taskValidations.length + 1,
-      name: this.taskValidator.value
+      name: this.taskValidator.value,
+      status:false
     }
     this.taskValidations.push(task)
     this.taskValidator = new FormControl();
@@ -106,7 +106,6 @@ export class CreateNewTaskComponent implements OnInit {
       reader.onload = (_event) => {
         this.url = reader.result;
       }
-      console.log(this.taskFiles, this.taskFiles[0].name)
     }
   }
 
@@ -123,7 +122,33 @@ export class CreateNewTaskComponent implements OnInit {
   }
 
   submitTask() {
-    console.log(this.valuesChangestaskForms)
+    console.log(this.taskForms.valid, this.taskForms)
+
+    this.projectList.find((project) => {
+      if(project.projectName === 'projectName1'){
+        const newTask:Newtask = {
+          taskName: this.valuesChangestaskForms['taskName'].value,
+          priority: '',
+          createdBy: '',
+          createdOn: '',
+          hoursToComplete: 0,
+          extraHoursToComplete: 0,
+          assignedDeveloper: '',
+          assignedDeveloperRequestedHours: 0,
+          taskDetails: '',
+          taskValidations: [],
+          taskFiles: [],
+          comments: []
+        }
+        project.Tasks.push()
+      }
+    })
+
+    const projectStructure: Projectlist = {
+      projectName: 'comingfromparent',
+      UsersIDList: this.projectUser,
+      Tasks: this.existingTasks
+    }
   }
 
   cancelTask() {
@@ -133,22 +158,14 @@ export class CreateNewTaskComponent implements OnInit {
 
 export interface TaskValidations {
   id: number,
-  name: string
+  name: string,
+  status:boolean
 }
 
-export interface User {
+export interface ProjectUsers {
   userId: string,
   firstName: string,
   lastName: string,
-  dob: string,
-  emailId: string,
-  phoneNumber: number
-  projectList: ProjectList[]
-}
-
-export interface ProjectList {
-  projectName: string,
-  Permission: string
 }
 
 export interface Comments {
@@ -157,8 +174,18 @@ export interface Comments {
   commnetedOn: Date,
 }
 
-export interface ProjectUsers {
-  userId: string,
-  firstName: string,
-  lastName: string,
+export interface Newtask {
+  taskName:string,
+  priority:string,
+  createdBy:string,
+  createdOn:string,
+  hoursToComplete:number,
+  extraHoursToComplete:number,
+  assignedDeveloper:string,
+  assignedDeveloperRequestedHours:number,
+  taskDetails:string,
+
+  taskValidations:TaskValidations[],
+  taskFiles:File[],
+  comments:Comments[]
 }
