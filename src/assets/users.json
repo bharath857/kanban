@@ -1,0 +1,30 @@
+[{
+    "userId": "Bay857",
+    "password":"Bay857",
+    "FirstName": "Bharath J",
+    "LastName": "Reddy",
+    "dob":"01/29/1995",
+    "emailId": "bharath.reddy.857@gmail.com",
+    "phoneNumber": "9886752489",
+    "projectList":[
+        {
+            "projectName":"ProjectOne",
+            "Permission":"admin"
+        }
+    ]
+},
+{
+    "userId": "Bay857",
+    "password":"Bay857",
+    "FirstName": "Karthik J",
+    "LastName": "Reddy",
+    "dob":"01/29/1995",
+    "emailId": "Karthik.reddy.857@gmail.com",
+    "phoneNumber": "9886752489",
+    "projectList":[
+        {
+            "projectName":"ProjectOne",
+            "Permission":"admin"
+        }
+    ]
+}]
