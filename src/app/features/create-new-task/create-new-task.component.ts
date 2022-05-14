@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { MatSnackBarType, SnakbarService } from 'src/app/shared/utilities/snackbar/snakbar.service';
 import { Projectlist, User, UtilService } from 'src/app/shared/utilities/util/util.service';
 
+
 @Component({
   selector: 'app-create-new-task',
   templateUrl: './create-new-task.component.html',
@@ -71,6 +72,14 @@ export class CreateNewTaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let jsonfile = require('jsonfile')
+ 
+    const file = '/tmp/data.json'
+    const obj = { name: 'JP' }
+     
+/*     jsonfile.writeFile(file, obj, function (err) {
+      if (err) console.error(err)
+    }) */
   }
 
   get valuesChangestaskForms() {
@@ -141,7 +150,7 @@ export class CreateNewTaskComponent implements OnInit {
           comments: []
         }
 
-        if(this.valuesChangestaskForms['comments'].value){
+        if (this.valuesChangestaskForms['comments'].value) {
           newTask.comments.push({
             commentedBy: this.valuesChangestaskForms['createdBy'].value,
             comment: this.valuesChangestaskForms['comments'].value,

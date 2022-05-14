@@ -12,11 +12,16 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 import { MaterialModule } from '../app/shared/material/material.module';
 import { CommonModule, DatePipe } from '@angular/common';
+import { LandingPageComponent } from './features/landing-page/landing-page.component';
+import { LoginSignUpComponent } from './features/login-sign-up/login-sign-up.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     CreateNewTaskComponent,
-    DashboardComponent
+    DashboardComponent,
+    LandingPageComponent,
+    LoginSignUpComponent
   ],
   imports: [
     BrowserModule,
