@@ -14,6 +14,7 @@ import { MaterialModule } from '../app/shared/material/material.module';
 import { CommonModule, DatePipe } from '@angular/common';
 import { LandingPageComponent } from './features/landing-page/landing-page.component';
 import { LoginSignUpComponent } from './features/login-sign-up/login-sign-up.component';
+import { ViewProfileComponent } from './features/view-profile/view-profile.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { LoginSignUpComponent } from './features/login-sign-up/login-sign-up.com
     CreateNewTaskComponent,
     DashboardComponent,
     LandingPageComponent,
-    LoginSignUpComponent
+    LoginSignUpComponent,
+    ViewProfileComponent
   ],
   imports: [
     BrowserModule,
